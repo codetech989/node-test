@@ -1,3 +1,5 @@
+import MenuItem from "./entities/menu-item.entity";
+import { col } from 'sequelize';
 export class MenuItemsService {
 
   /* TODO: complete getMenuItems so that it returns a nested menu structure
@@ -76,6 +78,26 @@ export class MenuItemsService {
   */
 
   async getMenuItems() {
-    throw new Error('TODO in task 3');
+    try{
+        const menuItemsWithParentId = await MenuItem.findAll({
+            include: {
+              model: MenuItem,
+              as: 'childrens',
+              where: { parentId: col('menuItem.id') },
+              required: false,
+            //   include: {
+            //     model: MenuItem,
+            //     as: 'childrens',
+            //     where: { parentId: col('subMenuItems.id') },
+            //     required: false,
+            //   },
+            },
+            where: { parentId: null },
+          });
+          return menuItemsWithParentId
+    }catch(e){
+
+    }
+    
   }
 }

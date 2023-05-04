@@ -1,4 +1,4 @@
-import { QueryInterface } from 'sequelize';
+import { QueryInterface ,literal} from 'sequelize';
 
 export default {
   /**
@@ -31,8 +31,209 @@ export default {
    * As a cinema owner I don't want to configure the seating for every show
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  up: (queryInterface: QueryInterface): Promise<void> => {
-    throw new Error('TODO: implement migration in task 4');
+  up: async (queryInterface: QueryInterface): Promise<void> => {
+    await queryInterface.createTable('users', {
+          id: {
+            type: 'integer',
+            primaryKey: true,
+            autoIncrement: true,
+          },
+          name: { type: 'varchar' },
+          email: {
+            type: 'string',
+            allowNull: false,
+            unique: true,
+          },
+          createdAt: {
+            type: 'timestamp',
+            defaultValue: literal('CURRENT_TIMESTAMP'),
+          },
+          updatedAt: {
+            type: 'timestamp',
+            defaultValue: literal('CURRENT_TIMESTAMP'),
+          },
+        });
+        await queryInterface.createTable('movies', {
+          id: {
+            type:'integer',
+            autoIncrement: true,
+            primaryKey: true,
+          },
+          name: {
+            type: 'string',
+            allowNull: false,
+          },
+          description: {
+            type: 'string',
+            allowNull: false,
+          },
+          duration: {
+            type: 'integer',
+            allowNull: false,
+          },
+          createdAt: {
+            type: 'timestamp',
+            defaultValue: literal('CURRENT_TIMESTAMP'),
+          },
+          updatedAt: {
+            type: 'timestamp',
+            defaultValue: literal('CURRENT_TIMESTAMP'),
+          },
+        });
+        await queryInterface.createTable('cinemas', {
+          id: {
+            type:'integer',
+            autoIncrement: true,
+            primaryKey: true,
+          },
+          name: {
+            type: 'string',
+            allowNull: false,
+          },
+          location: {
+            type: 'string',
+            allowNull: false,
+          },
+          createdAt: {
+            type: 'timestamp',
+            defaultValue: literal('CURRENT_TIMESTAMP'),
+          },
+          updatedAt: {
+            type: 'timestamp',
+            defaultValue: literal('CURRENT_TIMESTAMP'),
+          },
+        });
+        await queryInterface.createTable('screens', {
+          id: {
+            type: 'integer',
+            autoIncrement: true,
+            primaryKey: true,
+          },
+          cinemaId: {
+            type: 'integer',
+            allowNull: false,
+            references: {
+              model: 'cinemas',
+              key: 'id',
+            },
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
+          },
+          name: {
+            type: 'string',
+            allowNull: false,
+          },
+          capacity: {
+            type: 'integer',
+            allowNull:false
+          },
+          createdAt: {
+            type: 'timestamp',
+            defaultValue: literal('CURRENT_TIMESTAMP'),
+          },
+          updatedAt: {
+            type: 'timestamp',
+            defaultValue: literal('CURRENT_TIMESTAMP'),
+          },
+        })
+
+    await queryInterface.createTable('prices', {
+      id: {
+        type: 'integer',
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      cinemaId: {
+        type: 'integer',
+        allowNull: false,
+        references: {
+          model: 'cinemas',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      },
+      categoryId: {
+        type: 'integer',
+        allowNull: false,
+        references: {
+          model: 'categories',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      },
+      price: {
+        type:'integer',
+        allowNull: false,
+      },
+      createdAt: {
+        type: 'timestamp',
+        defaultValue: literal('CURRENT_TIMESTAMP'),
+      },
+      updatedAt: {
+        type: 'timestamp',
+        defaultValue: literal('CURRENT_TIMESTAMP'),
+      },
+    })
+
+    await queryInterface.createTable('seats', {
+      id: {
+        type: 'integer',
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      cinemaId: {
+        type: 'integer',
+        allowNull: false,
+        references: {
+          model: 'cinemas',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      },
+      screenId: {
+        type: 'integer',
+        allowNull: false,
+        references: {
+          model: 'screens',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      },
+      row: {
+        type: 'integer',
+        allowNull: false,
+      },
+      seatNumber: {
+        type: 'integer',
+        allowNull: false,
+      },
+      status: {
+        type: 'integer',
+        allowNull: false,
+        defaultValue: 'available',
+      },
+      createdAt: {
+        type: 'timestamp',
+        defaultValue: literal('CURRENT_TIMESTAMP'),
+      },
+      updatedAt: {
+        type: 'timestamp',
+        defaultValue: literal('CURRENT_TIMESTAMP'),
+      },
+    });
+
+
+ 
+        
+    
+    
+    
+    
+    
   },
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
